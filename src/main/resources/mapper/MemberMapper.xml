@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.digou.mapper.MemberMapper">
+  <resultMap id="BaseResultMap" type="com.digou.pojo.Member">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="member_phone" jdbcType="VARCHAR" property="member_phone" />
+    <result column="member_name" jdbcType="VARCHAR" property="member_name" />
+    <result column="member_address" jdbcType="VARCHAR" property="member_address" />
+    <result column="member_points" jdbcType="VARCHAR" property="member_points" />
+    <result column="member_rights" jdbcType="VARCHAR" property="member_rights" />
+
+  </resultMap>
+
+
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+
+
+  <sql id="Base_Column_List">
+      id,member_phone	,member_name	,member_address	,member_points,member_rights
+  </sql>
+
+
+  <select id="selectByExample" parameterType="com.digou.pojo.MemberExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+
+    <include refid="Base_Column_List" />
+    from Member
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+
+
+
+  <!-- 模糊查询　-->
+
+  <select id="selectByExampleAlike" parameterType="com.digou.pojo.Alike" resultMap="BaseResultMap">
+
+
+          select * from Member where ${find_value} like    CONCAT('%',#{input_value},'%')
+
+
+
+  </select>
+
+
+
+
+
+
+  <!--<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">-->
+    <!--delete from Member-->
+    <!--where id = #{id,jdbcType=INTEGER}-->
+  <!--</delete>-->
+
+
+
+
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.digou.pojo.Member" useGeneratedKeys="true">
+   INSERT INTO `Member` (`member_phone`, `member_name`, `member_address`, `member_points`, `member_rights`)
+    values (17800000000,#{member_name,jdbcType=VARCHAR},"暂无地址",1000,1)
+  </insert>
+
+
+  <!--<insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="Member" useGeneratedKeys="true">-->
+    <!--insert into Member-->
+    <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+      <!--<if test="id != null">-->
+        <!--id,-->
+      <!--</if>-->
+      <!--<if test="member_phone != null">-->
+          <!--member_phone,-->
+      <!--</if>-->
+      <!--<if test="member_name != null">-->
+          <!--member_name,-->
+      <!--</if>-->
+        <!--<if test="member_address != null">-->
+            <!--member_address,-->
+        <!--</if>-->
+        <!--<if test="member_points != null">-->
+            <!--member_points,-->
+        <!--</if>-->
+        <!--<if test="member_rights != null">-->
+            <!--member_rights,-->
+        <!--</if>-->
+    <!--</trim>-->
+
+    <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+      <!--<if test="member_name != null">-->
+        <!--#{member_name,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--&lt;!&ndash;<if test="member_phone != null">&ndash;&gt;-->
+        <!--&lt;!&ndash;#{member_phone,jdbcType=VARCHAR},&ndash;&gt;-->
+      <!--&lt;!&ndash;</if>&ndash;&gt;-->
+
+
+    <!--</trim>-->
+  <!--</insert>-->
+
+
+
+
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.digou.pojo.Member">
+    update Member
+    <set>
+      <if test="member_phone != null">
+          member_phone = #{member_phone,jdbcType=VARCHAR},
+      </if>
+      <if test="member_name != null">
+        member_name = #{member_name,jdbcType=VARCHAR},
+      </if>
+      <if test="member_address != null">
+        member_address = #{member_address,jdbcType=VARCHAR},
+      </if>
+      <if test="member_points != null">
+        member_points = #{member_points,jdbcType=INTEGER},
+      </if>
+      <if test="member_rights != null">
+        member_rights = #{member_rights,jdbcType=INTEGER},
+      </if>
+
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+
+  <update id="updateByPrimaryKey" parameterType="com.digou.pojo.Member">
+    update Member
+    set   member_phone = #{member_phone,jdbcType=VARCHAR},
+          member_name = #{member_name,jdbcType=VARCHAR},
+          member_address = #{member_address,jdbcType=VARCHAR},
+          member_points = #{member_points,jdbcType=INTEGER},
+          member_rights = #{member_rights,jdbcType=INTEGER}
+
+
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+    <!-- 查询单一用户 -->
+      <select id="selectUserByName" parameterType="string" resultType="Member">
+        select * from Member where member_name = #{member_name}
+      </select>
+
+  <!--&lt;!&ndash; 根据名称模糊查询用户信息 &ndash;&gt;-->
+  <!--<select id="selectUserByName" parameterType="string" resultType="Member">-->
+    <!--select * from Member where member_name = #{member_name}-->
+  <!--</select>-->
+
+
+
+
+
+
+</mapper>
